@@ -87,7 +87,7 @@ void renderCells(std::vector<std::vector<cells>> arr, int height, int width)
     }
 }
 
-std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> &arr) // update next state
+void evalCells(std::vector<std::vector<cells>> &arr) // update next state
 {
     int w = arr[0].size()-1;
     int h = arr.size()-1;
@@ -115,10 +115,9 @@ std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> &arr) 
             
         }
     }
-    return arr;
 }
 
-std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> &arr) // update curr state
+void updateCells(std::vector<std::vector<cells>> &arr) // update curr state
 {
     int w = arr[0].size();
     int h = arr.size();
@@ -129,7 +128,6 @@ std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> &arr
             arr[y][x].state = arr[y][x].nextS;
         }
     }
-    return arr;
 }
 
 void getTermDimentions(int *x, int *y); // helper functions
