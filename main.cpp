@@ -1,4 +1,6 @@
 /*
+April 9, 2026
+
 Cellular Automata
 
 Conway's Game of Life
@@ -8,7 +10,6 @@ Rules:
     * any live cell with with 2 or 3 live neigbors lives on the next generation
     * any live cell with with more than three neighbors die (overpopulation)
     * any dead cell with exacly three neighbors live (reproduction)
-
 */
 
 #include <iostream>
@@ -30,7 +31,7 @@ int isValidCell(int x, int y, int w, int h)
     return 0;
 }
 
-int countNeighbors(std::vector<std::vector<cells>> arr, int x, int y)
+int countNeighbors(std::vector<std::vector<cells>> &arr, int x, int y)
 {
     int count = 0;
     int w = arr[0].size();
@@ -61,7 +62,6 @@ int countNeighbors(std::vector<std::vector<cells>> arr, int x, int y)
     if(isValidCell(x+1, y+1, w, h)) // lower right
         if(arr[y+1][x+1].state == 1)
             count++;
-
     return count;
 }
 
@@ -83,15 +83,11 @@ void renderCells(std::vector<std::vector<cells>> arr, int height, int width)
             {
                 mvprintw(y, x, "#");
             }
-            else
-            {
-                mvprintw(y, x, " ");   
-            }
         }
     }
 }
 
-std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> arr) // update next state
+std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> &arr) // update next state
 {
     int w = arr[0].size()-1;
     int h = arr.size()-1;
@@ -100,20 +96,29 @@ std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> arr) /
         for (int x = 0; x < w; x++)
         {
             int count = countNeighbors(arr, x, y);
-            if(count < 2 && arr[y][x].state == 1) // any live cell with fewer than two live neighbors die (underpopulation)
-                arr[y][x].nextS = 0;
-            if(count >= 2 && count <= 3 && arr[y][x].state == 1) // any live cell with with 2 or 3 live neigbors lives on the next generation
-                arr[y][x].nextS = 1;
-            if(count > 3 && arr[y][x].state == 1) // any live cell with with more than three neighbors die (overpopulation)
-                arr[y][x].nextS = 0;
-            if (count == 3 && arr[y][x].state == 0) // any dead cell with exacly three neighbors live (reproduction)
-                arr[y][x].nextS = 1;
+            if(arr[y][x].state == 1)
+            {
+                if(count >= 2 && count <= 3) // any live cell with fewer than two live neighbors die (underpopulation)
+                {    
+                    arr[y][x].nextS = 1;
+                }// any live cell with with 2 or 3 live neigbors lives on the next generation
+                else // any live cell with with more than three neighbors die (overpopulation)
+                {
+                    arr[y][x].nextS = 0;
+                }         
+            }
+            else
+            {
+                if(count == 3) // any dead cell with exacly three neighbors live (reproduction)
+                    arr[y][x].nextS = 1;
+            }
+            
         }
     }
     return arr;
 }
 
-std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> arr) // update curr state
+std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> &arr) // update curr state
 {
     int w = arr[0].size();
     int h = arr.size();
@@ -127,7 +132,6 @@ std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> arr)
     return arr;
 }
 
-
 void getTermDimentions(int *x, int *y); // helper functions
 
 int main() {
@@ -140,12 +144,10 @@ int main() {
     nodelay(stdscr, TRUE);
     noecho();            // Don't echo key presses
     curs_set(0); // hide cursor
-    // keypad(stdscr, TRUE);
 
     int ch = 0;
     int width, height;
     getTermDimentions(&width, &height);
-
     
     std::vector<std::vector<cells>> arr = {};
     // arr[y][x]
@@ -172,9 +174,9 @@ int main() {
         if(dt > del)
         {
             gen++;
-            del = dt+(0.0016*60*(0));
-            arr = evalCells(arr);
-            arr = updateCells(arr);
+            del = dt+(0.0016*60*0);
+            evalCells(arr);
+            updateCells(arr);
         }
         
         renderCells(arr, height, width);
