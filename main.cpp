@@ -24,11 +24,11 @@ struct cells
     bool nextS = 0; // status next state
 };
 
-int isValidCell(int x, int y, int w, int h)
+bool isValidCell(int x, int y, int w, int h)
 {
     if(x >= 0 && y >= 0 && x <= w && y <= h)
-        return 1;
-    return 0;
+        return true;
+    return false;
 }
 
 int countNeighbors(std::vector<std::vector<cells>> &arr, int x, int y)
@@ -87,7 +87,7 @@ void renderCells(std::vector<std::vector<cells>> arr, int height, int width)
     }
 }
 
-std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> &arr) // update next state
+void evalCells(std::vector<std::vector<cells>> &arr) // update next state
 {
     int w = arr[0].size()-1;
     int h = arr.size()-1;
@@ -115,10 +115,9 @@ std::vector<std::vector<cells>> evalCells(std::vector<std::vector<cells>> &arr) 
             
         }
     }
-    return arr;
 }
 
-std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> &arr) // update curr state
+void updateCells(std::vector<std::vector<cells>> &arr) // update curr state
 {
     int w = arr[0].size();
     int h = arr.size();
@@ -129,7 +128,6 @@ std::vector<std::vector<cells>> updateCells(std::vector<std::vector<cells>> &arr
             arr[y][x].state = arr[y][x].nextS;
         }
     }
-    return arr;
 }
 
 void getTermDimentions(int *x, int *y); // helper functions
