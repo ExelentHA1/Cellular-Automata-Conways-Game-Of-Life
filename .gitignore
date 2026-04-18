@@ -2,3 +2,4 @@ app.exe
 main.o
 main
 *.log
+*.out
