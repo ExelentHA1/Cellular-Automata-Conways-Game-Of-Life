@@ -17,6 +17,9 @@ Rules:
 #include <vector>
 
 #include <random>
+#include <assert.h>
+
+#include "benchmark.hpp"
 
 struct cells
 {
@@ -26,7 +29,7 @@ struct cells
 
 bool isValidCell(int x, int y, int w, int h)
 {
-    if(x >= 0 && y >= 0 && x <= w && y <= h)
+    if(x >= 0 && y >= 0 && x < w && y < h)
         return true;
     return false;
 }
@@ -89,12 +92,13 @@ void renderCells(std::vector<std::vector<cells>> arr, int height, int width)
 
 void evalCells(std::vector<std::vector<cells>> &arr) // update next state
 {
-    int w = arr[0].size()-1;
-    int h = arr.size()-1;
+    int w = arr[0].size();
+    int h = arr.size();
     for (int y = 0; y < h; y++)
     {
         for (int x = 0; x < w; x++)
         {
+        	assert(x < w || y < h);
             int count = countNeighbors(arr, x, y);
             if(arr[y][x].state == 1)
             {
@@ -133,6 +137,8 @@ void updateCells(std::vector<std::vector<cells>> &arr) // update curr state
 void getTermDimentions(int *x, int *y); // helper functions
 
 int main() {
+	StopWatch s;
+	s.start();
     // Initialize the ncurses screen
     initscr();
     
@@ -149,6 +155,7 @@ int main() {
     
     std::vector<std::vector<cells>> arr = {};
     // arr[y][x]
+    s.start();
     for (int y = 0; y < height; y++)
     {
         std::vector<cells> i = {};
@@ -159,6 +166,8 @@ int main() {
             arr[y].push_back(initcells());
         }
     }
+    s.end();
+    s.print("Initializing Vector..");
     int gen = 0;
     float del = 0;
     float dt = 0;
@@ -172,13 +181,22 @@ int main() {
         if(dt > del)
         {
             gen++;
-            del = dt+(0.0016*60*0);
+            del = dt+(0.0016*60*0.01);
+            s.start();
             evalCells(arr);
+            s.end();
+            s.print("Evaluating Cells..");
+
+            s.start();
             updateCells(arr);
+            s.end();
+            s.print("Updating cells..");
         }
-        
+
+        s.start();
         renderCells(arr, height, width);
-        
+        s.end();
+        s.print("Rendering Cells");
         mvprintw(height-1, 0, "|window size\tx: %d y: %d, deltaT: %.02f Generation: %d|", width, height, dt, gen);
 
         refresh();

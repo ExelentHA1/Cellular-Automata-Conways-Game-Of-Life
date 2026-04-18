@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -std=c++17 -m64 -Iinclude -Wall # -Werror
+CFLAGS = -g -std=c++17 -m64 -Iinclude -Wall -Wextra
 # LFLAGS = 
 
 BINDIR = .
@@ -20,7 +20,7 @@ all: $(TARGET)
 
 # Build Rules
 $(TARGET) : $(OBJ)
-	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBDIR) -l:pdcurses.a
+	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBDIR) -std=c++20 -l:pdcurses.a
 
 $(BINDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ 
