@@ -12,12 +12,10 @@ Rules:
     * any dead cell with exacly three neighbors live (reproduction)
 */
 
-#include <iostream>
 #include <curses.h>
 #include <vector>
-
-#include <random>
 #include <assert.h>
+#include <ctime>
 
 #include "benchmark.hpp"
 
@@ -86,6 +84,10 @@ void renderCells(std::vector<std::vector<cells>> arr, int height, int width)
             {
                 mvprintw(y, x, "#");
             }
+            else
+            {
+            	mvprintw(y, x, " ");
+            }
         }
     }
 }
@@ -138,6 +140,7 @@ void getTermDimentions(int *x, int *y); // helper functions
 
 int main() {
 	StopWatch s;
+	srand(time(0));
 	s.start();
     // Initialize the ncurses screen
     initscr();
@@ -177,7 +180,6 @@ int main() {
         ch = getch();
         if(ch == 'q')
             break;
-        clear();
         if(dt > del)
         {
             gen++;
